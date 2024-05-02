@@ -3,6 +3,7 @@ import axios, { AxiosResponse } from "axios";
 import CityTable from "./CityTable";
 import { ForecastType } from "../types/Types";
 import Forecast from "./Forecast";
+import CircularProgress from '@mui/material/CircularProgress';
 
 function FetchCities() {
   const [cities, setCities] = useState<[]>([]);
@@ -33,7 +34,16 @@ function FetchCities() {
       <>
         <h1 className="text-2xl text-center uppercase font-bold my-4">Cities</h1>
         {loading ? (
-          <p>Loading...</p>
+           <div
+           style={{
+             display: 'flex',
+             justifyContent: 'center',
+             alignItems: 'center',
+             height: '100vh',
+           }}
+         >
+           <CircularProgress />
+         </div>
         ) : (
           <CityTable
             cities={cities}
