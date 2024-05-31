@@ -48,9 +48,11 @@ const CityTable = (props: Props) => {
       };
 
       setForecastData(forecastData);
-      setloading(false);
+    
     } catch (err) {
       console.error(err);
+    }finally {
+      setloading(false);
     }
   };
 
