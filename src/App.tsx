@@ -1,7 +1,7 @@
-import FetchCities from "./components/FetchCities";
+import FetchCitiesAndCityWeather from "./components/FetchCitiesAndCityWeather";
 
 const App = () => {
-  return <FetchCities />;
+  return <FetchCitiesAndCityWeather />;
 };
 
 export default App;

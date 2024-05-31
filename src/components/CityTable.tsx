@@ -7,7 +7,9 @@ interface Props {
   cities: City[];
   setPageSize: Dispatch<SetStateAction<number>>;
   pageSize: number;
-  setForecastData:Dispatch<SetStateAction<ForecastType|null>>
+  setForecastData: Dispatch<SetStateAction<ForecastType | null>>;
+  setloading: Dispatch<SetStateAction<boolean>>;
+  
 }
 
 interface Data {
@@ -17,12 +19,19 @@ interface Data {
 const API_key = import.meta.env.VITE_API_key;
 
 const CityTable = (props: Props) => {
-  const { cities, setPageSize, pageSize , setForecastData} = props;
+  const {
+    cities,
+    setPageSize,
+    pageSize,
+    setForecastData,
+    setloading,
+   
+  } = props;
   const [visibleCities, setVisibleCities] = useState<City[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  
 
-  const CityWeather = async (data: Data) => {
+  const getCityWeather = async (data: Data) => {
+    setloading(true);
     const { lat, lon } = data;
     console.log(lat, lon);
 
@@ -36,8 +45,8 @@ const CityTable = (props: Props) => {
         list: response.data.list.slice(0, 16),
       };
 
-      console.log(forecastData);
       setForecastData(forecastData);
+      setloading(false);
     } catch (err) {
       console.error(err);
     }
@@ -77,93 +86,82 @@ const CityTable = (props: Props) => {
   }, []);
 
   return (
-    <>
-     
-        <table className="w-full">
-          <thead>
-            <tr>
-              <th className="hidden sm:table-cell border  px-4 py-2">
-                City Name
-              </th>
-              <th className="hidden sm:table-cell border  px-4 py-2">
-                Country
-              </th>
-              <th className="hidden sm:table-cell border  px-4 py-2">
-                Timezone
-              </th>
-              <th className="hidden sm:table-cell border  px-4 py-2">
-                Coordinates
-              </th>
-              <th className="hidden sm:table-cell border  px-4 py-2">
-                Population
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {visibleCities.map((city, index) => (
-              <tr className="cursor-pointer"
-                key={index}
-                onClick={() =>
-                  CityWeather({
-                    lat: city.coordinates.lat,
-                    lon: city.coordinates.lon,
-                  })
-                }
-              >
-                <td
-                  data-cell="City Name"
-                  className={`before:content-[attr(data-cell)_':'] ${
-                    index % 2 === 0 && "bg-gray-300"
-                  } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
-                >
-                  {city.name}
-                </td>
-                <td
-                  data-cell="Country"
-                  className={`before:content-[attr(data-cell)_':'] ${
-                    index % 2 === 0 && "bg-gray-300"
-                  } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
-                >
-                  {city.cou_name_en}
-                </td>
-                <td
-                  data-cell="Timezone"
-                  className={`before:content-[attr(data-cell)_':'] ${
-                    index % 2 === 0 && "bg-gray-300"
-                  } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
-                >
-                  {city.timezone}
-                </td>
-                <td
-                  data-cell="Coordinates"
-                  className={`before:content-[attr(data-cell)_':'] ${
-                    index % 2 === 0 && "bg-gray-300"
-                  } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
-                >
-                  {city.coordinates.lon}°, {city.coordinates.lat}°
-                </td>
-                <td
-                  data-cell="Population"
-                  className={`before:content-[attr(data-cell)_':'] ${
-                    index % 2 === 0 && "bg-gray-300"
-                  } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
-                >
-                  {city.population}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td
-                colSpan={5}
-                className="border border-gray-800 px-4 py-2 bg-zinc-800"
-              ></td>
-            </tr>
-          </tfoot>
-        </table>
-    
-    </>
+    <table className="w-full">
+      <thead>
+        <tr>
+          <th className="hidden sm:table-cell border  px-4 py-2">City Name</th>
+          <th className="hidden sm:table-cell border  px-4 py-2">Country</th>
+          <th className="hidden sm:table-cell border  px-4 py-2">Timezone</th>
+          <th className="hidden sm:table-cell border  px-4 py-2">
+            Coordinates
+          </th>
+          <th className="hidden sm:table-cell border  px-4 py-2">Population</th>
+        </tr>
+      </thead>
+      <tbody>
+        {visibleCities.map((city, index) => (
+          <tr
+            className="cursor-pointer"
+            key={index}
+            onClick={() =>
+              getCityWeather({
+                lat: city.coordinates.lat,
+                lon: city.coordinates.lon,
+              })
+            }
+          >
+            <td
+              data-cell="City Name"
+              className={`before:content-[attr(data-cell)_':'] ${
+                index % 2 === 0 && "bg-gray-300"
+              } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
+            >
+              {city.name}
+            </td>
+            <td
+              data-cell="Country"
+              className={`before:content-[attr(data-cell)_':'] ${
+                index % 2 === 0 && "bg-gray-300"
+              } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
+            >
+              {city.cou_name_en}
+            </td>
+            <td
+              data-cell="Timezone"
+              className={`before:content-[attr(data-cell)_':'] ${
+                index % 2 === 0 && "bg-gray-300"
+              } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
+            >
+              {city.timezone}
+            </td>
+            <td
+              data-cell="Coordinates"
+              className={`before:content-[attr(data-cell)_':'] ${
+                index % 2 === 0 && "bg-gray-300"
+              } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
+            >
+              {city.coordinates.lon}°, {city.coordinates.lat}°
+            </td>
+            <td
+              data-cell="Population"
+              className={`before:content-[attr(data-cell)_':'] ${
+                index % 2 === 0 && "bg-gray-300"
+              } grid grid-cols-2 gap-x-1  before:font-bold  sm:table-cell  sm:before:content-[''] sm:font-normal border  px-4 py-2 `}
+            >
+              {city.population}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+      <tfoot>
+        <tr>
+          <td
+            colSpan={5}
+            className="border border-gray-800 px-4 py-2 bg-zinc-800"
+          ></td>
+        </tr>
+      </tfoot>
+    </table>
   );
 };
 

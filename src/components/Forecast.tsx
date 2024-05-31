@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction} from "react";
 import { ForecastType } from "../types/Types";
 import Degree from "./Degree";
 import Sunrise from './Icons/Sunrise'
@@ -18,6 +18,8 @@ type Props = {
   data: ForecastType;
   setForecastData: Dispatch<SetStateAction<ForecastType | null>>;
 };
+
+
 
 const Forecast = ({ data, setForecastData }: Props) => {
   const today = data.list[0]
