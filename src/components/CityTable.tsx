@@ -101,7 +101,7 @@ const CityTable = (props: Props) => {
           </thead>
           <tbody>
             {visibleCities.map((city, index) => (
-              <tr
+              <tr className="cursor-pointer"
                 key={index}
                 onClick={() =>
                   CityWeather({
