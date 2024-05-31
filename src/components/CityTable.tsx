@@ -31,15 +31,17 @@ const CityTable = (props: Props) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const getCityWeather = async (data: Data) => {
-    setloading(true);
+    
     const { lat, lon } = data;
     console.log(lat, lon);
 
     try {
+      
+      setloading(true);
       const response: AxiosResponse<ForecastType> = await axios.get(
         `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${API_key}`
       );
-
+      
       const forecastData: ForecastType = {
         ...response.data,
         list: response.data.list.slice(0, 16),
